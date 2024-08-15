@@ -1,3 +1,4 @@
+console.log(1);
 async function getOpenAIResponse(prompt) {
   const response = await fetch('/.netlify/functions/openai', {
     method: 'POST',
