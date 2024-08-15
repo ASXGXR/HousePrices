@@ -4,16 +4,16 @@ exports.handler = async function(event, context) {
   const { prompt } = JSON.parse(event.body);
   
   const apiKey = process.env.OPENAI_API_KEY;
-  const response = await fetch('https://api.openai.com/v1/completions', {
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: 'text-davinci-003',
-      prompt: prompt,
-      max_tokens: 50,
+      model: 'gpt-3.5-turbo',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 100,  // Adjust the token count based on your needs
     }),
   });
 
@@ -21,6 +21,6 @@ exports.handler = async function(event, context) {
 
   return {
     statusCode: 200,
-    body: JSON.stringify(data),
+    body: JSON.stringify(data.choices[0].message.content),
   };
 };
