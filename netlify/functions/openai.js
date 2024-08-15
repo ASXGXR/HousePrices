@@ -49,10 +49,12 @@ async function chatgptRequest(model, system, prompt, key) {
     body: requestBody,
   });
 
-  if (!response.ok) {
-    throw new Error(`OpenAI API error: ${response.statusText}`);
+  const data = await response.json();
+
+  if (!data.choices || data.choices.length === 0) {
+    throw new Error('No choices returned from OpenAI API');
   }
 
-  const data = await response.json();
-  return data.choices[0].message.content;
+  const botMessage = data.choices[0].message.content;
+  return botMessage;
 }
