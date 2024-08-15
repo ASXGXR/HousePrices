@@ -5,6 +5,13 @@ exports.handler = async function(event, context) {
     const fetch = (await import('node-fetch')).default;
     const apiKey = process.env.OPENAI_API_KEY;
 
+    if (!apiKey) {
+      throw new Error('API key is missing');
+    }
+
+    // Log the first and last few characters of the API key for debugging purposes
+    console.log('Using API key:', apiKey.slice(0, 4) + '...' + apiKey.slice(-4));
+
     const botMessage = await chatgptRequest(model, system, prompt, apiKey);
 
     return {
@@ -51,8 +58,6 @@ async function chatgptRequest(model, system, prompt, key) {
 
   const data = await response.json();
 
-  console.log('OpenAI Response:', data); // Log the entire response for debugging
-
   if (!data.choices || data.choices.length === 0) {
     throw new Error('No choices returned from OpenAI API');
   }
@@ -60,4 +65,3 @@ async function chatgptRequest(model, system, prompt, key) {
   const botMessage = data.choices[0].message.content;
   return botMessage;
 }
-
