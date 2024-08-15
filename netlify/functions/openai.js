@@ -2,12 +2,9 @@ exports.handler = async function(event, context) {
   try {
     const { prompt, model = 'gpt-3.5-turbo', system = '' } = JSON.parse(event.body);
 
-    // Dynamically import node-fetch
     const fetch = (await import('node-fetch')).default;
-    
     const apiKey = process.env.OPENAI_API_KEY;
 
-    // Use the provided chatgptRequest function
     const botMessage = await chatgptRequest(model, system, prompt, apiKey);
 
     return {
@@ -15,15 +12,14 @@ exports.handler = async function(event, context) {
       body: JSON.stringify({ message: botMessage }),
     };
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error in function:', error.message);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Internal Server Error' }),
+      body: JSON.stringify({ error: 'Internal Server Error', details: error.message }),
     };
   }
 };
 
-// chatgptRequest function
 async function chatgptRequest(model, system, prompt, key) {
   const messages = [];
 
@@ -53,7 +49,10 @@ async function chatgptRequest(model, system, prompt, key) {
     body: requestBody,
   });
 
+  if (!response.ok) {
+    throw new Error(`OpenAI API error: ${response.statusText}`);
+  }
+
   const data = await response.json();
-  const botMessage = data.choices[0].message.content;
-  return botMessage;
+  return data.choices[0].message.content;
 }
