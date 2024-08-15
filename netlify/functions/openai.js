@@ -1,67 +1,34 @@
 exports.handler = async function(event, context) {
   try {
     const { prompt, model = 'gpt-3.5-turbo', system = '' } = JSON.parse(event.body);
-
     const fetch = (await import('node-fetch')).default;
     const apiKey = process.env.API_KEY;
 
-    if (!apiKey) {
-      throw new Error('API key is missing');
-    }
+    if (!apiKey) throw new Error('API key is missing');
 
-    // Log the first and last few characters of the API key for debugging purposes
-    console.log('Using API key:', apiKey.slice(0, 4) + '...' + apiKey.slice(-4));
+    const messages = [{ role: "user", content: prompt }];
+    if (system) messages.unshift({ role: "system", content: system });
 
-    const botMessage = await chatgptRequest(model, system, prompt, apiKey);
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({ model, messages }),
+    });
+
+    const data = await response.json();
+    if (!data.choices || data.choices.length === 0) throw new Error('No choices returned from OpenAI API');
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: botMessage }),
+      body: JSON.stringify({ message: data.choices[0].message.content }),
     };
   } catch (error) {
-    console.error('Error in function:', error.message);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'Internal Server Error', details: error.message }),
     };
   }
 };
-
-async function chatgptRequest(model, system, prompt, key) {
-  const messages = [];
-
-  if (system) {
-    messages.push({
-      role: "system",
-      content: system,
-    });
-  }
-
-  messages.push({
-    role: "user",
-    content: prompt,
-  });
-
-  const requestBody = JSON.stringify({
-    model: model,
-    messages: messages,
-  });
-
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${key}`,
-    },
-    body: requestBody,
-  });
-
-  const data = await response.json();
-
-  if (!data.choices || data.choices.length === 0) {
-    throw new Error('No choices returned from OpenAI API');
-  }
-
-  const botMessage = data.choices[0].message.content;
-  return botMessage;
-}
