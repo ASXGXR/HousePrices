@@ -3,7 +3,7 @@ exports.handler = async function(event, context) {
     const { prompt, model = 'gpt-3.5-turbo', system = '' } = JSON.parse(event.body);
 
     const fetch = (await import('node-fetch')).default;
-    const apiKey = process.env.OPENAI_API_KEY;
+    const apiKey = process.env.API_KEY;
 
     if (!apiKey) {
       throw new Error('API key is missing');
