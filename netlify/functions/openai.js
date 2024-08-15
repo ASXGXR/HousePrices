@@ -51,6 +51,8 @@ async function chatgptRequest(model, system, prompt, key) {
 
   const data = await response.json();
 
+  console.log('OpenAI Response:', data); // Log the entire response for debugging
+
   if (!data.choices || data.choices.length === 0) {
     throw new Error('No choices returned from OpenAI API');
   }
@@ -58,3 +60,4 @@ async function chatgptRequest(model, system, prompt, key) {
   const botMessage = data.choices[0].message.content;
   return botMessage;
 }
+
