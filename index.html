@@ -1,16 +1,35 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>replit</title>
-  <link href="style.css" rel="stylesheet" type="text/css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Price Calculator</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-  Hi world
-  <script src="script.js"></script>
-</body>
+    <div class="container">
+        <h1>Property Price Calculator</h1>
+        <form id="property-form">
+            <label for="location">Enter Country/City:</label>
+            <input type="text" id="location" placeholder="e.g., Paris, France" required>
 
+            <label for="isCapital">
+                <input type="checkbox" id="isCapital" checked> Is this a capital city?
+            </label>
+
+            <label for="area">Enter Property Area (sq meters):</label>
+            <input type="number" id="area" placeholder="e.g., 100" required>
+
+            <button type="submit">Calculate</button>
+        </form>
+
+        <div id="result" class="result">
+            <h2>Results</h2>
+            <p id="price">Property Price: </p>
+            <p id="rent">Estimated Rent: </p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
 </html>
