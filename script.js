@@ -2,7 +2,8 @@
 document.getElementById('property-form').addEventListener('submit', async function(event) {
   event.preventDefault();
 
-  const location = document.getElementById('location').value.trim();
+  // Convert the location input to lowercase
+  const location = document.getElementById('location').value.trim().toLowerCase();
   const isCapital = document.getElementById('isCapital').checked;
   // const area = parseFloat(document.getElementById('area').value);
   const area = 1;
@@ -32,7 +33,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
     const responseData = await apiResponse.json();
     price = parseFloat(responseData.message.match(/[\d,]+(\.\d+)?/)[0].replace(/,/g, ''));
 
-    // Store the fetched price in localStorage
+    // Store the fetched price in localStorage using the lowercase location
     localStorage.setItem(location, price);
     console.log(`Stored price for ${location}: ${price}.`);
   }
@@ -45,10 +46,9 @@ document.getElementById('property-form').addEventListener('submit', async functi
   const estimatedRent = Math.round(totalPrice / 20);
 
   // Display the results
-  document.getElementById('price').textContent = `Property Price: $${totalPrice.toLocaleString()} USD`;
-  document.getElementById('rent').textContent = `Estimated Rent: $${estimatedRent.toLocaleString()} USD`;
+  document.getElementById('price').textContent = `Property Price: $${totalPrice.toLocaleString()}`;
+  document.getElementById('rent').textContent = `Estimated Rent: $${estimatedRent.toLocaleString()}`;
 });
-
 
 
 
