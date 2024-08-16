@@ -17,17 +17,15 @@ document.getElementById('property-form').addEventListener('submit', async functi
     console.log(`Using stored price for ${location}: ${price}.`);
   } else {
     // If not stored, fetch from the API
+    // const prompt = `Estimate the average buying price per square meter of a house in the capital city of ${location}, in USD. In the format: "Average House Price in {city}: {single-price}", add nothing else, only provide the avg price per sqm`;
     const prompt = `Estimate the average buying price of a house in the capital city of ${location}, in USD. In the format: "Average House Price in {city}: {single-price}", add nothing else, and don't do the square meter price`;
-    const adjustedPrompt = isCapital 
-        ? prompt 
-        : `${prompt} It is not the capital city, so adjust the price accordingly.`;
 
     const apiResponse = await fetch('/.netlify/functions/openai', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ prompt: adjustedPrompt }),
+        body: JSON.stringify({ prompt: prompt }),
     });
 
     const responseData = await apiResponse.json();
