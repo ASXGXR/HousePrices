@@ -57,18 +57,19 @@ document.getElementById('property-form').addEventListener('submit', async functi
   let subCapitalTotalPrice = Math.round(area * subCapitalPrice * 0.1);
   let subCapitalEstimatedRent = Math.round(subCapitalTotalPrice / 20);
 
-  // Round to the nearest 10 if more than 1000
+  // Round number if more than 1000
+  const roundTo = 1000
   if (capitalTotalPrice > 1000) {
-      capitalTotalPrice = Math.round(capitalTotalPrice / 10) * 10;
+      capitalTotalPrice = Math.round(capitalTotalPrice / roundTo) * roundTo;
   }
   if (capitalEstimatedRent > 1000) {
-      capitalEstimatedRent = Math.round(capitalEstimatedRent / 10) * 10;
+      capitalEstimatedRent = Math.round(capitalEstimatedRent / roundTo) * roundTo;
   }
   if (subCapitalTotalPrice > 1000) {
-      subCapitalTotalPrice = Math.round(subCapitalTotalPrice / 10) * 10;
+      subCapitalTotalPrice = Math.round(subCapitalTotalPrice / roundTo) * roundTo;
   }
   if (subCapitalEstimatedRent > 1000) {
-      subCapitalEstimatedRent = Math.round(subCapitalEstimatedRent / 10) * 10;
+      subCapitalEstimatedRent = Math.round(subCapitalEstimatedRent / roundTo) * roundTo;
   }
 
   // Displaying Country Name
