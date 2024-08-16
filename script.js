@@ -47,7 +47,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
 
   // Display the results
   document.getElementById('price').textContent = `Property Price: $${totalPrice.toLocaleString()}`;
-  document.getElementById('rent').textContent = `Estimated Rent: $${estimatedRent.toLocaleString()}`;
+  document.getElementById('rent').textContent = `Rent Per Month: $${estimatedRent.toLocaleString()}`;
 });
 
 
