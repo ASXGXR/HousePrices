@@ -28,6 +28,6 @@ document.getElementById('property-form').addEventListener('submit', async functi
   }
   const estimatedRent = totalPrice / 20;
 
-  document.getElementById('price').textContent = `Property Price: $${totalPrice.toFixed(2).toLocaleString()} USD`;
-  document.getElementById('rent').textContent = `Estimated Rent: $${estimatedRent.toFixed(2).toLocaleString()} USD`;
+  document.getElementById('price').textContent = `Property Price: $${totalPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD`;
+  document.getElementById('rent').textContent = `Estimated Rent: $${estimatedRent.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD`;  
 });
