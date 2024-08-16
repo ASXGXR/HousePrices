@@ -60,7 +60,9 @@ document.getElementById('property-form').addEventListener('submit', async functi
   }
 
   // Display the results for both capital and sub-capital
-  document.getElementById('country_name').textContent = `$${capitalize(location)}`;
+  const country_name = document.getElementById('country_name')
+  country_name.style.display = "flex";
+  country_name.textContent = capitalize(location);
   document.getElementById('capital-price').textContent = `Buy Price: $${capitalTotalPrice.toLocaleString()}`;
   document.getElementById('capital-rent').textContent = `Rent Per Month: $${capitalEstimatedRent.toLocaleString()}`;
   document.getElementById('sub-capital-price').textContent = `Buy Price: $${subCapitalTotalPrice.toLocaleString()}`;

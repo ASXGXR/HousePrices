@@ -119,3 +119,7 @@ button:hover {
   flex-direction: column;
   gap: 0px;
 }
+
+#country_name {
+  display: none;
+}
