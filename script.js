@@ -26,10 +26,10 @@ document.getElementById('property-form').addEventListener('submit', async functi
   if (capitalPrice && !isNaN(parseFloat(capitalPrice))) {
     capitalPrice = parseFloat(capitalPrice);
     console.log(`Using stored capital city price for ${location}: ${capitalPrice}.`);
+  
   } else { 
     // Get from ChatGPT if not a valid number or doesn't exist
     const capitalPrompt = `Estimate the average buying price of a house in the capital city of ${location}, in USD. In the format: "Average House Price in {city}: {single-price}", add nothing else, and don't do the square meter price`;
-
     const capitalApiResponse = await fetch('/.netlify/functions/openai', {
         method: 'POST',
         headers: {
@@ -40,7 +40,9 @@ document.getElementById('property-form').addEventListener('submit', async functi
 
     const capitalResponseData = await capitalApiResponse.json();
     console.log(capitalResponseData);
-    capitalPrice = parseFloat(capitalResponseData.message.match(/[\d,]+(\.\d+)?/)[0].replace(/,/g, ''));
+
+    // Getting price from response
+    capitalPrice = parseFloat(capitalResponseData.message.replace(/[^0-9.]/g, ''));
 
     // Store the valid capitalPrice in localStorage
     localStorage.setItem(`${location}_capital`, capitalPrice);
