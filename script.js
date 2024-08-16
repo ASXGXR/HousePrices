@@ -43,11 +43,19 @@ document.getElementById('property-form').addEventListener('submit', async functi
   if (!isCapital) {
       totalPrice = Math.round(totalPrice / 1.5);
   }
-  const estimatedRent = Math.round(totalPrice / 20);
+  let estimatedRent = Math.round(totalPrice / 20);
+
+  // Round to the nearest 10 if more than 1000
+  if (totalPrice > 1000) {
+      totalPrice = Math.round(totalPrice / 10) * 10;
+  }
+  if (estimatedRent > 1000) {
+      estimatedRent = Math.round(estimatedRent / 10) * 10;
+  }
 
   // Display the results
-  document.getElementById('price').textContent = `Property Price: $${totalPrice.toLocaleString()}`;
-  document.getElementById('rent').textContent = `Rent Per Month: $${estimatedRent.toLocaleString()}`;
+  document.getElementById('price').textContent = `Property Price: $${totalPrice.toLocaleString()} USD`;
+  document.getElementById('rent').textContent = `Rent Per Month: $${estimatedRent.toLocaleString()} USD`;
 });
 
 
