@@ -17,7 +17,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
     console.log(`Using stored price for ${location}: ${price}.`);
   } else {
     // If not stored, fetch from the API
-    const prompt = `Estimate the average buying price of a house in the capital city of ${location}, in USD. In the format: "Price: {single-price}", add nothing else, and don't do the square meter price`;
+    const prompt = `Estimate the average buying price of a house in the capital city of ${location}, in USD. In the format: "Average House Price in {city}: {single-price}", add nothing else, and don't do the square meter price`;
     const adjustedPrompt = isCapital 
         ? prompt 
         : `${prompt} It is not the capital city, so adjust the price accordingly.`;
@@ -31,6 +31,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
     });
 
     const responseData = await apiResponse.json();
+    console.log(responseData);
     price = parseFloat(responseData.message.match(/[\d,]+(\.\d+)?/)[0].replace(/,/g, ''));
 
     // Store the fetched price in localStorage using the lowercase location
