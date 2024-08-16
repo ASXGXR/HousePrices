@@ -18,7 +18,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
 
   const responseData = await apiResponse.json();
   console.log(responseData);
-  const price = parseFloat(responseData.message.match(/\d+(\.\d+)?/)[0]);
+  const price = parseFloat(responseData.message.match(/[\d,]+(\.\d+)?/)[0].replace(/,/g, ''));
 
   let totalPrice = Math.round(area * price * 0.1);
   if (!isCapital) {
