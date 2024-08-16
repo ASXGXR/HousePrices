@@ -58,7 +58,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
   let subCapitalEstimatedRent = Math.round(subCapitalTotalPrice / 20);
 
   // Round number if more than 1000
-  const roundTo = 1000
+  const roundTo = 100
   if (capitalTotalPrice > 1000) {
       capitalTotalPrice = Math.round(capitalTotalPrice / roundTo) * roundTo;
   }
