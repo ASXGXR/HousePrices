@@ -7,7 +7,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
   // const area = parseFloat(document.getElementById('area').value);
   const area = 1;
 
-  const prompt = `Get the average buying price of a house in the capital city of ${location}, in USD. In the format: "Price: {single-price}", add nothing else, and don't do the square meter price`;
+  const prompt = `Estimate the average buying price of a house in the capital city of ${location}, in USD. In the format: "Price: {single-price}", add nothing else, and don't do the square meter price`;
 
   const apiResponse = await fetch('/.netlify/functions/openai', {
       method: 'POST',
