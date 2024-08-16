@@ -13,7 +13,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
   if (price) {
     // If stored, parse the string back to a number
     price = parseFloat(price);
-    console.log(`Using stored price for ${location}: ${price} per sq meter.`);
+    console.log(`Using stored price for ${location}: ${price}.`);
   } else {
     // If not stored, fetch from the API
     const prompt = `Estimate the average buying price of a house in the capital city of ${location}, in USD. In the format: "Price: {single-price}", add nothing else, and don't do the square meter price`;
@@ -34,7 +34,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
 
     // Store the fetched price in localStorage
     localStorage.setItem(location, price);
-    console.log(`Stored price for ${location}: ${price} per sq meter.`);
+    console.log(`Stored price for ${location}: ${price}.`);
   }
 
   // Calculate total price and rent
