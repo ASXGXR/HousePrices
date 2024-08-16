@@ -22,12 +22,12 @@ document.getElementById('property-form').addEventListener('submit', async functi
   const responseData = await apiResponse.json();
   const pricePerSqMeter = parseFloat(responseData.message.match(/\d+(\.\d+)?/)[0]);
 
-  let totalPrice = area * pricePerSqMeter * 0.1;
+  let totalPrice = Math.round(area * pricePerSqMeter * 0.1);
   if (!isCapital) {
-      totalPrice /= 1.5;
+      totalPrice = Math.round(totalPrice / 1.5);
   }
-  const estimatedRent = totalPrice / 20;
+  const estimatedRent = Math.round(totalPrice / 20);
 
-  document.getElementById('price').textContent = `Property Price: $${totalPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD`;
-  document.getElementById('rent').textContent = `Estimated Rent: $${estimatedRent.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD`;  
+  document.getElementById('price').textContent = `Property Price: $${totalPrice.toLocaleString()} USD`;
+  document.getElementById('rent').textContent = `Estimated Rent: $${estimatedRent.toLocaleString()} USD`;
 });
