@@ -7,30 +7,48 @@ document.getElementById('property-form').addEventListener('submit', async functi
   // const area = parseFloat(document.getElementById('area').value);
   const area = 1;
 
-  const prompt = `Estimate the average buying price of a house in the capital city of ${location}, in USD. In the format: "Price: {single-price}", add nothing else, and don't do the square meter price`;
+  // Check if the price is already stored in localStorage
+  let price = localStorage.getItem(location);
 
-  const apiResponse = await fetch('/.netlify/functions/openai', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ prompt: prompt }),
-  });
+  if (price) {
+    // If stored, parse the string back to a number
+    price = parseFloat(price);
+    console.log(`Using stored price for ${location}: ${price} per sq meter.`);
+  } else {
+    // If not stored, fetch from the API
+    const prompt = `Estimate the average buying price of a house in the capital city of ${location}, in USD. In the format: "Price: {single-price}", add nothing else, and don't do the square meter price`;
+    const adjustedPrompt = isCapital 
+        ? prompt 
+        : `${prompt} It is not the capital city, so adjust the price accordingly.`;
 
-  const responseData = await apiResponse.json();
-  console.log(responseData);
-  const price = parseFloat(responseData.message.match(/[\d,]+(\.\d+)?/)[0].replace(/,/g, ''));
-  console.log(price);
+    const apiResponse = await fetch('/.netlify/functions/openai', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt: adjustedPrompt }),
+    });
 
+    const responseData = await apiResponse.json();
+    price = parseFloat(responseData.message.match(/[\d,]+(\.\d+)?/)[0].replace(/,/g, ''));
+
+    // Store the fetched price in localStorage
+    localStorage.setItem(location, price);
+    console.log(`Stored price for ${location}: ${price} per sq meter.`);
+  }
+
+  // Calculate total price and rent
   let totalPrice = Math.round(area * price * 0.1);
   if (!isCapital) {
       totalPrice = Math.round(totalPrice / 1.5);
   }
   const estimatedRent = Math.round(totalPrice / 20);
 
-  document.getElementById('price').textContent = `Property Price: $${totalPrice.toLocaleString()}`;
-  document.getElementById('rent').textContent = `Estimated Rent: $${estimatedRent.toLocaleString()}`;
+  // Display the results
+  document.getElementById('price').textContent = `Property Price: $${totalPrice.toLocaleString()} USD`;
+  document.getElementById('rent').textContent = `Estimated Rent: $${estimatedRent.toLocaleString()} USD`;
 });
+
 
 
 
