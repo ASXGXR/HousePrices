@@ -1,16 +1,22 @@
 document.getElementById('property-form').addEventListener('submit', async function(event) {
   event.preventDefault();
 
+  function capitalize(word) {
+    if (!word) return '';
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  }
   const location = document.getElementById('location').value.trim().toLowerCase();
   const area = 1;  // Default area value
 
-  // Fetch capital city price
+  // Get price from storage
   let capitalPrice = localStorage.getItem(`${location}_capital`);
-
+  
+  // If found
   if (capitalPrice) {
     capitalPrice = parseFloat(capitalPrice);
     console.log(`Using stored capital city price for ${location}: ${capitalPrice}.`);
-  } else {
+  
+  } else { // Get from ChatGPT
     const capitalPrompt = `Estimate the average buying price of a house in the capital city of ${location}, in USD. In the format: "Average House Price in {city}: {single-price}", add nothing else, and don't do the square meter price`;
 
     const capitalApiResponse = await fetch('/.netlify/functions/openai', {
@@ -54,6 +60,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
   }
 
   // Display the results for both capital and sub-capital
+  document.getElementById('country_name').textContent = `$${capitalize(location)}`;
   document.getElementById('capital-price').textContent = `Buy Price: $${capitalTotalPrice.toLocaleString()}`;
   document.getElementById('capital-rent').textContent = `Rent Per Month: $${capitalEstimatedRent.toLocaleString()}`;
   document.getElementById('sub-capital-price').textContent = `Buy Price: $${subCapitalTotalPrice.toLocaleString()}`;

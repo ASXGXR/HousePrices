@@ -8,33 +8,34 @@
 </head>
 <body>
     <div class="container">
-        <h1>Property Price Calculator</h1>
-        <form id="property-form">
-            <label for="location">Enter Country:</label>
-            <input type="text" id="location" placeholder="e.g., Germany, France" required>
+      <h1>Property Price Calculator</h1>
+      <form id="property-form">
+          <label for="location">Enter Country:</label>
+          <input type="text" id="location" placeholder="e.g., Germany, France" required>
 
-            <!-- <label for="area">Enter Property Area (sq meters):</label>
-            <input type="number" id="area" placeholder="e.g., 100" required> -->
+          <!-- <label for="area">Enter Property Area (sq meters):</label>
+          <input type="number" id="area" placeholder="e.g., 100" required> -->
 
-            <button type="submit">Calculate</button>
-        </form>
+          <button type="submit">Calculate</button>
+      </form>
 
-        <div id="result" class="result">
-            <div class="row">
-              <h2>Capital<br>City</h2>
-              <div class="column">
-                <p id="capital-price">Property Price: </p>
-                <p id="capital-rent">Rent Per Month: </p>
-              </div>
-            </div>
-            <div class="row">
-              <h2>Sub-<br>Capital</h2>
-              <div class="column">
-                <p id="sub-capital-price">Property Price: </p>
-                <p id="sub-capital-rent">Rent Per Month: </p>
-              </div>
-            </div>
+      <div id="result" class="result">
+        <h3 id="country_name"></h3>
+        <div class="row">
+          <h2>Capital<br>City</h2>
+          <div class="column">
+            <p id="capital-price">Property Price: </p>
+            <p id="capital-rent">Rent Per Month: </p>
+          </div>
         </div>
+        <div class="row">
+          <h2>Sub-<br>Capital</h2>
+          <div class="column">
+            <p id="sub-capital-price">Property Price: </p>
+            <p id="sub-capital-rent">Rent Per Month: </p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="script.js"></script>
