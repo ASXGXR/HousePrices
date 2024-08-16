@@ -57,18 +57,18 @@ document.getElementById('property-form').addEventListener('submit', async functi
   let subCapitalTotalPrice = Math.round(area * subCapitalPrice * 0.1);
   let subCapitalEstimatedRent = Math.round(subCapitalTotalPrice / 20);
 
-  // Round number if more than 1000
+  // Round number
   const roundTo = 100
-  if (capitalTotalPrice > 1000) {
+  if (capitalTotalPrice > roundTo) {
       capitalTotalPrice = Math.round(capitalTotalPrice / roundTo) * roundTo;
   }
-  if (capitalEstimatedRent > 1000) {
+  if (capitalEstimatedRent > roundTo) {
       capitalEstimatedRent = Math.round(capitalEstimatedRent / roundTo) * roundTo;
   }
-  if (subCapitalTotalPrice > 1000) {
+  if (subCapitalTotalPrice > roundTo) {
       subCapitalTotalPrice = Math.round(subCapitalTotalPrice / roundTo) * roundTo;
   }
-  if (subCapitalEstimatedRent > 1000) {
+  if (subCapitalEstimatedRent > roundTo) {
       subCapitalEstimatedRent = Math.round(subCapitalEstimatedRent / roundTo) * roundTo;
   }
 
