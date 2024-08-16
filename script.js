@@ -1,10 +1,21 @@
+// script.js
 document.getElementById('property-form').addEventListener('submit', async function(event) {
   event.preventDefault();
+
+  const submitButton = event.target.querySelector('button[type="submit"]');
+
+  // Disable the button to prevent multiple clicks
+  if (submitButton.disabled) {
+    return; // If button is disabled, do nothing
+  }
+
+  submitButton.disabled = true; // Disable the button
 
   function capitalize(word) {
     if (!word) return '';
     return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
   }
+  
   const location = document.getElementById('location').value.trim().toLowerCase();
   const area = 1;  // Default area value
 
@@ -15,8 +26,8 @@ document.getElementById('property-form').addEventListener('submit', async functi
   if (capitalPrice) {
     capitalPrice = parseFloat(capitalPrice);
     console.log(`Using stored capital city price for ${location}: ${capitalPrice}.`);
-  
-  } else { // Get from ChatGPT
+  } else { 
+    // Get from ChatGPT
     const capitalPrompt = `Estimate the average buying price of a house in the capital city of ${location}, in USD. In the format: "Average House Price in {city}: {single-price}", add nothing else, and don't do the square meter price`;
 
     const capitalApiResponse = await fetch('/.netlify/functions/openai', {
@@ -59,14 +70,21 @@ document.getElementById('property-form').addEventListener('submit', async functi
       subCapitalEstimatedRent = Math.round(subCapitalEstimatedRent / 10) * 10;
   }
 
-  // Display the results for both capital and sub-capital
-  const country_name = document.getElementById('country_name')
+  // Displaying Country Name
+  const country_name = document.getElementById('country_name');
   country_name.style.display = "flex";
   country_name.textContent = capitalize(location);
+  
+  // Display the results for both capital and sub-capital
   document.getElementById('capital-price').textContent = `Buy Price: $${capitalTotalPrice.toLocaleString()}`;
   document.getElementById('capital-rent').textContent = `Rent Per Month: $${capitalEstimatedRent.toLocaleString()}`;
   document.getElementById('sub-capital-price').textContent = `Buy Price: $${subCapitalTotalPrice.toLocaleString()}`;
   document.getElementById('sub-capital-rent').textContent = `Rent Per Month: $${subCapitalEstimatedRent.toLocaleString()}`;
+
+  // Re-enable the submit button after 2 seconds
+  setTimeout(() => {
+    submitButton.disabled = false;
+  }, 2000);
 });
 
 
