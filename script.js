@@ -22,12 +22,12 @@ document.getElementById('property-form').addEventListener('submit', async functi
   // Get price from storage
   let capitalPrice = localStorage.getItem(`${location}_capital`);
   
-  // If found
-  if (capitalPrice) {
+  // Check if capitalPrice is a valid number
+  if (capitalPrice && !isNaN(parseFloat(capitalPrice))) {
     capitalPrice = parseFloat(capitalPrice);
     console.log(`Using stored capital city price for ${location}: ${capitalPrice}.`);
   } else { 
-    // Get from ChatGPT
+    // Get from ChatGPT if not a valid number or doesn't exist
     const capitalPrompt = `Estimate the average buying price of a house in the capital city of ${location}, in USD. In the format: "Average House Price in {city}: {single-price}", add nothing else, and don't do the square meter price`;
 
     const capitalApiResponse = await fetch('/.netlify/functions/openai', {
@@ -42,6 +42,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
     console.log(capitalResponseData);
     capitalPrice = parseFloat(capitalResponseData.message.match(/[\d,]+(\.\d+)?/)[0].replace(/,/g, ''));
 
+    // Store the valid capitalPrice in localStorage
     localStorage.setItem(`${location}_capital`, capitalPrice);
     console.log(`Stored capital city price for ${location}: ${capitalPrice}.`);
   }
@@ -86,7 +87,6 @@ document.getElementById('property-form').addEventListener('submit', async functi
     submitButton.disabled = false;
   }, 2000);
 });
-
 
 
 
