@@ -54,10 +54,10 @@ document.getElementById('property-form').addEventListener('submit', async functi
   }
 
   // Display the results for both capital and sub-capital
-  document.getElementById('capital-price').textContent = `Capital City Property Price: $${capitalTotalPrice.toLocaleString()} USD`;
-  document.getElementById('capital-rent').textContent = `Capital City Rent Per Month: $${capitalEstimatedRent.toLocaleString()} USD`;
-  document.getElementById('sub-capital-price').textContent = `Sub-Capital City Property Price: $${subCapitalTotalPrice.toLocaleString()} USD`;
-  document.getElementById('sub-capital-rent').textContent = `Sub-Capital City Rent Per Month: $${subCapitalEstimatedRent.toLocaleString()} USD`;
+  document.getElementById('capital-price').textContent = `Property Price: $${capitalTotalPrice.toLocaleString()} USD`;
+  document.getElementById('capital-rent').textContent = `Rent Per Month: $${capitalEstimatedRent.toLocaleString()} USD`;
+  document.getElementById('sub-capital-price').textContent = `Property Price: $${subCapitalTotalPrice.toLocaleString()} USD`;
+  document.getElementById('sub-capital-rent').textContent = `Rent Per Month: $${subCapitalEstimatedRent.toLocaleString()} USD`;
 });
 
 
