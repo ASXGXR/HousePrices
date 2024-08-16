@@ -10,7 +10,6 @@ document.getElementById('property-form').addEventListener('submit', async functi
   }
 
   submitButton.disabled = true; // Disable the button
-
   function capitalize(word) {
     if (!word) return '';
     return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
