@@ -134,3 +134,9 @@ button:hover {
 .result h2 {
   margin-top: 0;
 }
+
+.checkbox {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
