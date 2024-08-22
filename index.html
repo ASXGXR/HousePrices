@@ -10,32 +10,37 @@
     <div class="container">
       <h1>Property Price Calculator</h1>
       <form id="property-form">
-        <label for="location">Enter Country:</label>
-        <input type="text" id="location" placeholder="e.g., Germany, France" required autocomplete="off">
-        <label for="area">Ground Area (Blocks):</label>
-        <input type="number" id="area" placeholder="e.g., 100" required>
-        <div>
-            <input type="checkbox" id="isCapital" checked>
-            <label for="isCapital">Capital City</label>
-        </div>
-        <div>
-            <input type="checkbox" id="isEmptyPlot" checked>
-            <label for="isEmptyPlot">Empty Plot</label>
-        </div>
+          <label for="location">Enter Country:</label>
+          <input type="text" id="location" placeholder="e.g., Germany, France" required autocomplete="off">
+          
+          <label for="area">Ground Area (Blocks):</label>
+          <input type="number" id="area" placeholder="e.g., 100" required>
 
-        <button type="submit">Calculate</button>
+          <div>
+              <input type="checkbox" id="isCapital" checked>
+              <label for="isCapital">Capital City</label>
+          </div>
+
+          <div>
+              <input type="checkbox" id="isEmptyPlot" checked>
+              <label for="isEmptyPlot">Empty Plot</label>
+          </div>
+
+          <button type="submit">Calculate</button>
       </form>
 
       <div id="result" class="result">
         <h3 id="country_name"></h3>
-        <div class="row">
+
+        <div id="capital-section" class="row">
           <h2>Capital<br>City</h2>
           <div class="column">
             <p id="capital-price">Property Price: </p>
             <p id="capital-rent">Rent Per Month: </p>
           </div>
         </div>
-        <div class="row">
+
+        <div id="sub-capital-section" class="row">
           <h2>Sub-<br>Capital</h2>
           <div class="column">
             <p id="sub-capital-price">Property Price: </p>

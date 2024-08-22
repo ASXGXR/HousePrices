@@ -126,3 +126,11 @@ button:hover {
   padding: 0;
   margin: 0;
 }
+
+#capital-section, #sub-capital-section {
+  display: none; /* Hide both sections initially */
+}
+
+.result h2 {
+  margin-top: 0;
+}

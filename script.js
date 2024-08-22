@@ -90,15 +90,17 @@ document.getElementById('property-form').addEventListener('submit', async functi
 
   // Display results based on whether it's a capital city or sub-capital
   if (isCapital) {
+    document.getElementById('capital-section').style.display = "block";
+    document.getElementById('sub-capital-section').style.display = "none";
+
     document.getElementById('capital-price').textContent = `Buy Price: $${propertyPrice.toLocaleString()}`;
     document.getElementById('capital-rent').textContent = `Rent Per Month: $${estimatedRent.toLocaleString()}`;
-    document.getElementById('sub-capital-price').textContent = '';
-    document.getElementById('sub-capital-rent').textContent = '';
   } else {
+    document.getElementById('capital-section').style.display = "none";
+    document.getElementById('sub-capital-section').style.display = "block";
+
     document.getElementById('sub-capital-price').textContent = `Buy Price: $${propertyPrice.toLocaleString()}`;
     document.getElementById('sub-capital-rent').textContent = `Rent Per Month: $${estimatedRent.toLocaleString()}`;
-    document.getElementById('capital-price').textContent = '';
-    document.getElementById('capital-rent').textContent = '';
   }
 
   // Displaying Country Name
