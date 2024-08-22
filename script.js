@@ -29,7 +29,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
     console.log(`Using stored capital city price for ${location}: ${capitalPrice}.`);
   
   } else { 
-    const prompt = `Estimate the average buying price of a house in the capital city of ${location}, in USD. In the format: "Average House Price in {city}: {single-price}", add nothing else.`;
+    const prompt = `Estimate the average price per square meter of a house in the capital city of ${location}, in USD. In the format: "Average SQM Price in {city}: {single-price}", add nothing else.`;
     const apiResponse = await fetch('/.netlify/functions/openai', {
         method: 'POST',
         headers: {
