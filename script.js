@@ -51,7 +51,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
   let finalPrice = isCapital ? capitalPrice : Math.round(capitalPrice / 1.5);
 
   // Calculate total price based on area in square meters
-  let totalPrice = Math.round(area * finalPrice);
+  let totalPrice = Math.round(area * finalPrice * 0.1);
 
   // Adjust for Empty Plot
   if (isEmptyPlot) {
