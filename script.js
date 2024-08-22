@@ -21,84 +21,85 @@ document.getElementById('property-form').addEventListener('submit', async functi
   }
   submitButton.disabled = true; // Disable the button
   
-  let capitalPrice;
+  let propertyPrice;
   if (area) {
     // Area is provided, get price per square meter
-    let capitalPricePerSqMeter = localStorage.getItem(`${location}_capital_price_per_sq_meter`);
+    let pricePerSqMeter = localStorage.getItem(`${location}_${isCapital ? 'capital' : 'subcapital'}_price_per_sq_meter`);
     
-    if (capitalPricePerSqMeter && !isNaN(parseFloat(capitalPricePerSqMeter))) {
-      capitalPricePerSqMeter = parseFloat(capitalPricePerSqMeter);
-      console.log(`Using stored capital city price per square meter for ${location}: ${capitalPricePerSqMeter}.`);
+    if (pricePerSqMeter && !isNaN(parseFloat(pricePerSqMeter))) {
+      pricePerSqMeter = parseFloat(pricePerSqMeter);
+      console.log(`Using stored ${isCapital ? 'capital' : 'sub-capital'} city price per square meter for ${location}: ${pricePerSqMeter}.`);
     
     } else { 
-      const capitalPrompt = `Estimate the average price per square meter of a house in the capital city of ${location}, in USD. In the format: "Average Price per Square Meter in {city}: {price}", add nothing else.`;
-      const capitalApiResponse = await fetch('/.netlify/functions/openai', {
+      const prompt = `Estimate the average price per square meter of a house in ${isCapital ? 'the capital city of' : 'a non-capital city in'} ${location}, in USD. In the format: "Average Price per Square Meter in {city}: {price}", add nothing else.`;
+      const apiResponse = await fetch('/.netlify/functions/openai', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ prompt: capitalPrompt }),
+          body: JSON.stringify({ prompt }),
       });
 
-      const capitalResponseData = await capitalApiResponse.json();
-      console.log(capitalResponseData);
+      const responseData = await apiResponse.json();
+      console.log(responseData);
 
-      capitalPricePerSqMeter = parseFloat(capitalResponseData.message.replace(/[^0-9.]/g, ''));
+      pricePerSqMeter = parseFloat(responseData.message.replace(/[^0-9.]/g, ''));
 
-      localStorage.setItem(`${location}_capital_price_per_sq_meter`, capitalPricePerSqMeter);
-      console.log(`Stored capital city price per square meter for ${location}: ${capitalPricePerSqMeter}.`);
+      localStorage.setItem(`${location}_${isCapital ? 'capital' : 'subcapital'}_price_per_sq_meter`, pricePerSqMeter);
+      console.log(`Stored ${isCapital ? 'capital' : 'sub-capital'} city price per square meter for ${location}: ${pricePerSqMeter}.`);
     }
 
-    // Calculate total prices and rents based on area in square meters
-    capitalPrice = Math.round(area * capitalPricePerSqMeter);
-    const subCapitalPrice = Math.round(capitalPrice / 1.5);
+    // Calculate total price based on area in square meters
+    propertyPrice = Math.round(area * pricePerSqMeter);
 
   } else {
     // Area is not provided, get average house price
-    capitalPrice = localStorage.getItem(`${location}_capital`);
+    propertyPrice = localStorage.getItem(`${location}_${isCapital ? 'capital' : 'subcapital'}`);
     
-    if (capitalPrice && !isNaN(parseFloat(capitalPrice))) {
-      capitalPrice = parseFloat(capitalPrice);
-      console.log(`Using stored capital city house price for ${location}: ${capitalPrice}.`);
+    if (propertyPrice && !isNaN(parseFloat(propertyPrice))) {
+      propertyPrice = parseFloat(propertyPrice);
+      console.log(`Using stored ${isCapital ? 'capital' : 'sub-capital'} city house price for ${location}: ${propertyPrice}.`);
     
     } else {
-      const capitalPrompt = `Estimate the average buying price of a house in the capital city of ${location}, in USD. In the format: "Average House Price in {city}: {single-price}", add nothing else, and don't do the square meter price.`;
-      const capitalApiResponse = await fetch('/.netlify/functions/openai', {
+      const prompt = `Estimate the average buying price of a house in ${isCapital ? 'the capital city of' : 'a non-capital city in'} ${location}, in USD. In the format: "Average House Price in {city}: {single-price}", add nothing else, and don't do the square meter price.`;
+      const apiResponse = await fetch('/.netlify/functions/openai', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ prompt: capitalPrompt }),
+          body: JSON.stringify({ prompt }),
       });
 
-      const capitalResponseData = await capitalApiResponse.json();
-      console.log(capitalResponseData);
+      const responseData = await apiResponse.json();
+      console.log(responseData);
 
-      capitalPrice = parseFloat(capitalResponseData.message.replace(/[^0-9.]/g, ''));
+      propertyPrice = parseFloat(responseData.message.replace(/[^0-9.]/g, ''));
 
-      localStorage.setItem(`${location}_capital`, capitalPrice);
-      console.log(`Stored capital city house price for ${location}: ${capitalPrice}.`);
+      localStorage.setItem(`${location}_${isCapital ? 'capital' : 'subcapital'}`, propertyPrice);
+      console.log(`Stored ${isCapital ? 'capital' : 'sub-capital'} city house price for ${location}: ${propertyPrice}.`);
     }
   }
 
-  // Adjustments based on checkboxes
-  if (!isCapital) {
-    capitalPrice = Math.round(capitalPrice / 1.5); // Adjust price if not in the capital
-  }
-
+  // Adjust for Empty Plot
   if (isEmptyPlot) {
-    capitalPrice = Math.round(capitalPrice * 0.8); // Adjust price if it is an empty plot
+    propertyPrice = Math.round(propertyPrice * 0.8); // Adjust price if it is an empty plot
   }
 
   // Calculate estimated rent
-  const capitalEstimatedRent = Math.round(capitalPrice / 20);
-  const subCapitalEstimatedRent = Math.round(capitalPrice / 30); // Assuming sub-capital rent is lower
+  const estimatedRent = Math.round(propertyPrice / 20);
 
-  // Display results
-  document.getElementById('capital-price').textContent = `Buy Price: $${capitalPrice.toLocaleString()}`;
-  document.getElementById('capital-rent').textContent = `Rent Per Month: $${capitalEstimatedRent.toLocaleString()}`;
-  document.getElementById('sub-capital-price').textContent = `Buy Price: $${Math.round(capitalPrice / 1.5).toLocaleString()}`;
-  document.getElementById('sub-capital-rent').textContent = `Rent Per Month: $${subCapitalEstimatedRent.toLocaleString()}`;
+  // Display results based on whether it's a capital city or sub-capital
+  if (isCapital) {
+    document.getElementById('capital-price').textContent = `Buy Price: $${propertyPrice.toLocaleString()}`;
+    document.getElementById('capital-rent').textContent = `Rent Per Month: $${estimatedRent.toLocaleString()}`;
+    document.getElementById('sub-capital-price').textContent = '';
+    document.getElementById('sub-capital-rent').textContent = '';
+  } else {
+    document.getElementById('sub-capital-price').textContent = `Buy Price: $${propertyPrice.toLocaleString()}`;
+    document.getElementById('sub-capital-rent').textContent = `Rent Per Month: $${estimatedRent.toLocaleString()}`;
+    document.getElementById('capital-price').textContent = '';
+    document.getElementById('capital-rent').textContent = '';
+  }
 
   // Displaying Country Name
   const country_name = document.getElementById('country_name');
