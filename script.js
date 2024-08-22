@@ -1,4 +1,3 @@
-// script.js
 document.getElementById('property-form').addEventListener('submit', async function(event) {
   event.preventDefault();
 
@@ -8,14 +7,13 @@ document.getElementById('property-form').addEventListener('submit', async functi
     return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
   }
 
-  
   // VARIABLES
   const submitButton = event.target.querySelector('button[type="submit"]');
   const location = document.getElementById('location').value.trim().toLowerCase();
-  const area = parseFloat(document.getElementById('area').value); // Get the area in square meters
-  // Get price from storage
-  let capitalPricePerSqMeter = localStorage.getItem(`${location}_capital_price_per_sq_meter`);
-
+  const areaInput = document.getElementById('area').value.trim(); 
+  const area = areaInput ? parseFloat(areaInput) : null; // Get the area in square meters or null if empty
+  const isCapital = document.getElementById('isCapital').checked; // Check if 'Capital City' is ticked
+  const isEmptyPlot = document.getElementById('isEmptyPlot').checked; // Check if 'Empty Plot' is ticked
 
   // Prevent multiple clicks
   if (submitButton.disabled) {
@@ -23,69 +21,89 @@ document.getElementById('property-form').addEventListener('submit', async functi
   }
   submitButton.disabled = true; // Disable the button
   
+  let capitalPrice;
+  if (area) {
+    // Area is provided, get price per square meter
+    let capitalPricePerSqMeter = localStorage.getItem(`${location}_capital_price_per_sq_meter`);
+    
+    if (capitalPricePerSqMeter && !isNaN(parseFloat(capitalPricePerSqMeter))) {
+      capitalPricePerSqMeter = parseFloat(capitalPricePerSqMeter);
+      console.log(`Using stored capital city price per square meter for ${location}: ${capitalPricePerSqMeter}.`);
+    
+    } else { 
+      const capitalPrompt = `Estimate the average price per square meter of a house in the capital city of ${location}, in USD. In the format: "Average Price per Square Meter in {city}: {price}", add nothing else.`;
+      const capitalApiResponse = await fetch('/.netlify/functions/openai', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ prompt: capitalPrompt }),
+      });
 
-  // Check if capitalPricePerSqMeter is a valid number
-  if (capitalPricePerSqMeter && !isNaN(parseFloat(capitalPricePerSqMeter))) {
-    capitalPricePerSqMeter = parseFloat(capitalPricePerSqMeter);
-    console.log(`Using stored capital city price per square meter for ${location}: ${capitalPricePerSqMeter}.`);
-  
-  } else { 
-    // Get from ChatGPT if not a valid number or doesn't exist
-    const capitalPrompt = `Estimate the average price per square meter of a house in the capital city of ${location}, in USD. In the format: "Average Price per Square Meter in {city}: {price}", add nothing else.`;
-    const capitalApiResponse = await fetch('/.netlify/functions/openai', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ prompt: capitalPrompt }),
-    });
+      const capitalResponseData = await capitalApiResponse.json();
+      console.log(capitalResponseData);
 
-    const capitalResponseData = await capitalApiResponse.json();
-    console.log(capitalResponseData);
+      capitalPricePerSqMeter = parseFloat(capitalResponseData.message.replace(/[^0-9.]/g, ''));
 
-    // Getting price from response
-    capitalPricePerSqMeter = parseFloat(capitalResponseData.message.replace(/[^0-9.]/g, ''));
+      localStorage.setItem(`${location}_capital_price_per_sq_meter`, capitalPricePerSqMeter);
+      console.log(`Stored capital city price per square meter for ${location}: ${capitalPricePerSqMeter}.`);
+    }
 
-    // Store the valid capitalPricePerSqMeter in localStorage
-    localStorage.setItem(`${location}_capital_price_per_sq_meter`, capitalPricePerSqMeter);
-    console.log(`Stored capital city price per square meter for ${location}: ${capitalPricePerSqMeter}.`);
+    // Calculate total prices and rents based on area in square meters
+    capitalPrice = Math.round(area * capitalPricePerSqMeter);
+    const subCapitalPrice = Math.round(capitalPrice / 1.5);
+
+  } else {
+    // Area is not provided, get average house price
+    capitalPrice = localStorage.getItem(`${location}_capital`);
+    
+    if (capitalPrice && !isNaN(parseFloat(capitalPrice))) {
+      capitalPrice = parseFloat(capitalPrice);
+      console.log(`Using stored capital city house price for ${location}: ${capitalPrice}.`);
+    
+    } else {
+      const capitalPrompt = `Estimate the average buying price of a house in the capital city of ${location}, in USD. In the format: "Average House Price in {city}: {single-price}", add nothing else, and don't do the square meter price.`;
+      const capitalApiResponse = await fetch('/.netlify/functions/openai', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ prompt: capitalPrompt }),
+      });
+
+      const capitalResponseData = await capitalApiResponse.json();
+      console.log(capitalResponseData);
+
+      capitalPrice = parseFloat(capitalResponseData.message.replace(/[^0-9.]/g, ''));
+
+      localStorage.setItem(`${location}_capital`, capitalPrice);
+      console.log(`Stored capital city house price for ${location}: ${capitalPrice}.`);
+    }
   }
 
-  // Calculate sub-capital price per square meter as 1.5 times less than the capital price
-  const subCapitalPricePerSqMeter = Math.round(capitalPricePerSqMeter / 1.5);
+  // Adjustments based on checkboxes
+  if (!isCapital) {
+    capitalPrice = Math.round(capitalPrice / 1.5); // Adjust price if not in the capital
+  }
 
-  // Calculate total prices and rents based on area in square meters
-  let capitalTotalPrice = Math.round(area * capitalPricePerSqMeter);
-  let capitalEstimatedRent = Math.round(capitalTotalPrice / 20);
+  if (isEmptyPlot) {
+    capitalPrice = Math.round(capitalPrice * 0.8); // Adjust price if it is an empty plot
+  }
 
-  let subCapitalTotalPrice = Math.round(area * subCapitalPricePerSqMeter);
-  let subCapitalEstimatedRent = Math.round(subCapitalTotalPrice / 20);
+  // Calculate estimated rent
+  const capitalEstimatedRent = Math.round(capitalPrice / 20);
+  const subCapitalEstimatedRent = Math.round(capitalPrice / 30); // Assuming sub-capital rent is lower
 
-  // Round number
-  const roundTo = 100;
-  if (capitalTotalPrice > roundTo) {
-      capitalTotalPrice = Math.round(capitalTotalPrice / roundTo) * roundTo;
-  }
-  if (capitalEstimatedRent > roundTo) {
-      capitalEstimatedRent = Math.round(capitalEstimatedRent / roundTo) * roundTo;
-  }
-  if (subCapitalTotalPrice > roundTo) {
-      subCapitalTotalPrice = Math.round(subCapitalTotalPrice / roundTo) * roundTo;
-  }
-  if (subCapitalEstimatedRent > roundTo) {
-      subCapitalEstimatedRent = Math.round(subCapitalEstimatedRent / roundTo) * roundTo;
-  }
+  // Display results
+  document.getElementById('capital-price').textContent = `Buy Price: $${capitalPrice.toLocaleString()}`;
+  document.getElementById('capital-rent').textContent = `Rent Per Month: $${capitalEstimatedRent.toLocaleString()}`;
+  document.getElementById('sub-capital-price').textContent = `Buy Price: $${Math.round(capitalPrice / 1.5).toLocaleString()}`;
+  document.getElementById('sub-capital-rent').textContent = `Rent Per Month: $${subCapitalEstimatedRent.toLocaleString()}`;
 
   // Displaying Country Name
   const country_name = document.getElementById('country_name');
   country_name.style.display = "flex";
   country_name.textContent = capitalize(location);
-  
-  // Display the results for both capital and sub-capital
-  document.getElementById('capital-price').textContent = `Buy Price: $${capitalTotalPrice.toLocaleString()}`;
-  document.getElementById('capital-rent').textContent = `Rent Per Month: $${capitalEstimatedRent.toLocaleString()}`;
-  document.getElementById('sub-capital-price').textContent = `Buy Price: $${subCapitalTotalPrice.toLocaleString()}`;
-  document.getElementById('sub-capital-rent').textContent = `Rent Per Month: $${subCapitalEstimatedRent.toLocaleString()}`;
 
   // Re-enable the submit button after 2 seconds
   setTimeout(() => {
