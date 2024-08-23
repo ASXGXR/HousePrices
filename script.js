@@ -2,29 +2,26 @@ document.getElementById('property-form').addEventListener('submit', async functi
   event.preventDefault();
 
   // FUNCTIONS
+
+  // Capitalise Word
   function capitalize(word) {
     return word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : '';
   }
 
-  // Delay on Button
+  // Button Delay
   function disableButton(button, delay) {
     button.disabled = true;
-    button.style.pointerEvents = 'none';
     setTimeout(() => {
         button.disabled = false;
-        button.style.pointerEvents = 'auto';
-    }, delay * 1000); // delay is in seconds
+    }, delay * 1000);
   }
 
   // Smoothly Add Box
   function smoothExpand(parentBox, addBox, duration = 1.5) {
-    let box;
-    if (typeof addBox === 'string') {
-        box = document.createElement('div');
-        box.className = addBox.replace('.', '');
-    } else {
-        box = addBox;
-    }
+    // Create box if string given
+    const box = typeof addBox === 'string' 
+      ? Object.assign(document.createElement('div'), { className: addBox.replace('.', '') })
+      : addBox;
 
     // Set initial styles for the new box
     box.style.opacity = 0;
@@ -32,12 +29,10 @@ document.getElementById('property-form').addEventListener('submit', async functi
     box.style.maxHeight = '0px';
     box.style.overflow = 'hidden';
 
-    // Append the box, initially hidden
+    // Append the box, trigger reflow, and start the transition
     parentBox.appendChild(box);
-    // Trigger reflow to ensure the transition happens
     void parentBox.offsetHeight;
-    // Transition to a large max-height and opacity
-    box.style.maxHeight = '1000px'; // Arbitrarily large value to ensure it expands fully
+    box.style.maxHeight = '1000px'; // Large value to ensure expansion
     box.style.opacity = 1;
 
     // Cleanup: Once the transition is complete, remove the maxHeight to allow natural growth/shrinkage
