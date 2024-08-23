@@ -37,10 +37,6 @@ document.getElementById('property-form').addEventListener('submit', async functi
     });
   }
 
-  function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
   // VARIABLES
   const submitBtn = event.target.querySelector('button[type="submit"]');
   const location = document.getElementById('location').value.trim().toLowerCase();
@@ -104,7 +100,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
 
   // Expanding Results Container
   resultContainer.style.display = "flex";
-  await smoothExpand(document.querySelector('.container'), resultContainer);
+  smoothExpand(document.querySelector('.container'), resultContainer);
   
   // Re-enable the submit button after 2 seconds
   setTimeout(() => {
