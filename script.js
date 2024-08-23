@@ -18,35 +18,25 @@ document.getElementById('property-form').addEventListener('submit', async functi
     // Set initial styles for the new box
     box.style.opacity = 0;
     box.style.transition = `opacity ${duration}s ease-in-out`;
+    box.style.maxHeight = '0px';
+    box.style.overflow = 'hidden';
 
-    // Append the box but keep it out of the document flow
-    box.style.position = 'absolute';
-    box.style.visibility = 'hidden';
+    // Append the box, initially hidden
     parentBox.appendChild(box);
-
-    // Calculate the new height needed for the parentBox
-    const startHeight = parentBox.scrollHeight;
-    const newHeight = startHeight + box.scrollHeight;
-
-    // Set the parentBox height explicitly before the transition
-    parentBox.style.height = `${startHeight}px`;
-    parentBox.style.transition = `height ${duration}s ease-in-out`;
 
     // Trigger reflow to ensure the transition happens
     void parentBox.offsetHeight;
 
-    // Update the height of the parent box and make the new box visible
-    parentBox.style.height = `${newHeight}px`;
-    box.style.position = '';
-    box.style.visibility = '';
+    // Transition to full height and opacity
+    box.style.maxHeight = box.scrollHeight + 'px'; // Allow the box to expand
     box.style.opacity = 1;
 
-    // Once the transition is complete, set the height to auto for future flexibility
-    box.addEventListener('transitionend', function() {
-        parentBox.style.height = 'auto';
+    // Cleanup: Once the transition is complete, remove the maxHeight to allow natural growth/shrinkage
+    box.addEventListener('transitionend', function () {
+        box.style.maxHeight = '';
+        box.style.overflow = '';
     }, { once: true });
   }
-
 
   // VARIABLES
   const submitBtn = event.target.querySelector('button[type="submit"]');
