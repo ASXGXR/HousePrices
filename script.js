@@ -35,7 +35,6 @@ document.getElementById('property-form').addEventListener('submit', async functi
     void parentBox.offsetHeight;
 
     // Now, update the height of the parent box and make the new box visible
-    parentBox.style.height = `${newHeight}px`;
     box.style.position = '';
     box.style.visibility = '';
     box.style.opacity = 1;
