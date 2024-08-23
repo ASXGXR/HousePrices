@@ -9,10 +9,10 @@ document.getElementById('property-form').addEventListener('submit', async functi
   function smoothExpand(parentBox, addBox, duration = 0.5) {
     let box;
     if (typeof addBox === 'string') {
-      box = document.createElement('div');
-      box.className = addBox.replace('.', '');
+        box = document.createElement('div');
+        box.className = addBox.replace('.', '');
     } else {
-      box = addBox;
+        box = addBox;
     }
 
     // Set initial styles for the new box
@@ -25,26 +25,27 @@ document.getElementById('property-form').addEventListener('submit', async functi
     parentBox.appendChild(box);
 
     // Calculate the new height needed for the parentBox
-    const newHeight = parentBox.scrollHeight + box.scrollHeight;
+    const startHeight = parentBox.scrollHeight;
+    const newHeight = startHeight + box.scrollHeight;
 
     // Set the parentBox height explicitly before the transition
-    parentBox.style.height = `${parentBox.scrollHeight}px`;
+    parentBox.style.height = `${startHeight}px`;
     parentBox.style.transition = `height ${duration}s ease-in-out`;
 
     // Trigger reflow to ensure the transition happens
     void parentBox.offsetHeight;
 
-    // Now, update the height of the parent box and make the new box visible
+    // Update the height of the parent box and make the new box visible
     parentBox.style.height = `${newHeight}px`;
     box.style.position = '';
     box.style.visibility = '';
     box.style.opacity = 1;
 
-    // Once the transition is complete, remove the explicit height
-    setTimeout(() => {
-        parentBox.style.height = '';
-    }, duration * 1000);
-}
+    // Once the transition is complete, set the height to auto for future flexibility
+    box.addEventListener('transitionend', function() {
+        parentBox.style.height = 'auto';
+    }, { once: true });
+  }
 
 
   // VARIABLES
