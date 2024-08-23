@@ -7,34 +7,31 @@ document.getElementById('property-form').addEventListener('submit', async functi
   }
 
   function smoothExpand(parentBox, addBox, duration = 0.5) {
-    return new Promise(resolve => {
-      let box;
-      if (typeof addBox === 'string') {
-        box = document.createElement('div');
-        box.className = addBox.replace('.', '');
-      } else {
-        box = addBox;
-      }
+    let box;
+    if (typeof addBox === 'string') {
+      box = document.createElement('div');
+      box.className = addBox.replace('.', '');
+    } else {
+      box = addBox;
+    }
 
-      box.style.opacity = 0;
-      box.style.transition = `opacity ${duration}s ease-in-out`;
+    box.style.opacity = 0;
+    box.style.transition = opacity ${duration}s ease-in-out;
 
-      parentBox.appendChild(box);
+    parentBox.appendChild(box);
 
-      const startHeight = parentBox.clientHeight;
-      parentBox.style.height = `${startHeight}px`;
-      parentBox.style.transition = `height ${duration}s ease-in-out`;
+    const startHeight = parentBox.clientHeight;
+    parentBox.style.height = ${startHeight}px;
+    parentBox.style.transition = height ${duration}s ease-in-out;
 
-      void parentBox.offsetHeight; // Trigger reflow
+    void parentBox.offsetHeight; // Trigger reflow
 
-      const newHeight = startHeight + box.scrollHeight;
-      parentBox.style.height = `${newHeight}px`;
+    const newHeight = startHeight + box.scrollHeight;
+    parentBox.style.height = ${newHeight}px;
 
-      setTimeout(() => {
-        box.style.opacity = 1;
-        setTimeout(() => resolve(), duration * 1000); // Resolve after the transition completes
-      }, duration * 1000);
-    });
+    setTimeout(() => {
+      box.style.opacity = 1;
+    }, duration * 1000);
   }
 
   // VARIABLES
