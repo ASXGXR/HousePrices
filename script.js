@@ -44,7 +44,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
   const areaInput = document.getElementById('area').value.trim();
   const area = areaInput ? parseFloat(areaInput) : 100;
   const isCapital = document.getElementById('isCapital').checked;
-  const isEmptyPlot = document.getElementById('isEmptyPlot').checked;
+  const hasHouse = document.getElementById('hasHouse').checked;
 
   if (submitBtn.disabled) return;
 
@@ -83,8 +83,8 @@ document.getElementById('property-form').addEventListener('submit', async functi
   const difference = 0.05; // Diff between real world + in-game price
   let totalPrice = Math.round(area * finalPrice * difference);
 
-  if (isEmptyPlot) {
-    totalPrice = Math.round(totalPrice * 0.8);
+  if (!hasHouse) {
+    totalPrice = Math.round(totalPrice * 0.7);
   }
 
   const estRent = totalPrice > 0 ? Math.round(totalPrice / 20) : 0;
