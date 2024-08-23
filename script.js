@@ -100,6 +100,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
   const estRent = Math.round(totalPrice / 20);
 
   // Display results based on whether it's a capital city or sub-capital
+  const resultContainer = document.getElementById('result');
   const capitalSection = document.getElementById('capital-section');
   const subCapitalSection = document.getElementById('sub-capital-section');
 
@@ -110,7 +111,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
 
       // Smoothly expand and show the capital section, hide the sub-capital section
       capitalSection.style.display = "block";
-      smoothExpand(capitalSection, capitalSection);
+      smoothExpand(resultContainer, capitalSection);
       subCapitalSection.style.display = "none";
   } else {
       // Update text content
@@ -119,7 +120,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
 
       // Smoothly expand and show the sub-capital section, hide the capital section
       subCapitalSection.style.display = "block";
-      smoothExpand(subCapitalSection, subCapitalSection);
+      smoothExpand(resultContainer, subCapitalSection);
       capitalSection.style.display = "none";
   }
 
