@@ -80,7 +80,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
 
   // Price calculation
   const finalPrice = isCapital ? capitalPrice : Math.round(capitalPrice / 1.5);
-  const difference = 0.05; // Diff between real world + in-game price
+  const difference = 0.04; // Diff between real world + in-game price
   let totalPrice = Math.round(area * finalPrice * difference);
 
   if (!hasHouse) {
