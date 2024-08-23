@@ -6,13 +6,17 @@ document.getElementById('property-form').addEventListener('submit', async functi
     return word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : '';
   }
 
+  // Delay on Button
   function disableButton(button, delay) {
     button.disabled = true;
+    button.style.pointerEvents = 'none';
     setTimeout(() => {
         button.disabled = false;
-    }, delay*1000); //seconds
+        button.style.pointerEvents = 'auto';
+    }, delay * 1000); // delay is in seconds
   }
 
+  // Smoothly Add Box
   function smoothExpand(parentBox, addBox, duration = 1.5) {
     let box;
     if (typeof addBox === 'string') {
@@ -52,7 +56,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
   const hasHouse = document.getElementById('hasHouse').checked;
 
   if (submitBtn.disabled) return;
-  disableButton(submitBtn, 2); // Disable the button for 2 seconds
+  disableButton(submitBtn, 5); // Disable the button for 2 seconds
 
   // Fetch or calculate the average house price for the capital city
   let capitalPrice = localStorage.getItem(`${location}_capital_price`);
