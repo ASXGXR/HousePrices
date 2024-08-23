@@ -7,6 +7,44 @@ document.getElementById('property-form').addEventListener('submit', async functi
     return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
   }
 
+  function smoothExpand(parentBox, addBox, duration = 0.5) {
+    // Check if addBox is a string (i.e. a selector like '.box')
+    let box;
+    if (typeof addBox === 'string') {
+        // Create a new div with the provided class
+        box = document.createElement('div');
+        box.className = addBox.replace('.', '');
+    } else {
+        // If addBox is already an element, use it directly
+        box = addBox;
+    }
+
+    // Set initial styles for the animation
+    box.style.opacity = 0;
+    box.style.transition = `opacity ${duration}s ease-in-out`;
+
+    // Append the new box to the parent
+    parentBox.appendChild(box);
+
+    // Smoothly expand the parentBox to accommodate the new box
+    const startHeight = parentBox.clientHeight;
+    parentBox.style.height = `${startHeight}px`;
+    parentBox.style.transition = `height ${duration}s ease-in-out`;
+
+    // Trigger a reflow to ensure the styles are applied
+    void parentBox.offsetHeight;
+
+    // Calculate the new height with the added box
+    const newHeight = startHeight + box.scrollHeight;
+    parentBox.style.height = `${newHeight}px`;
+
+    // Fade in the new box
+    setTimeout(() => {
+        box.style.opacity = 1;
+    }, duration * 1000);
+  }
+
+
   // VARIABLES
   const submitBtn = event.target.querySelector('button[type="submit"]');
   const location = document.getElementById('location').value.trim().toLowerCase();
@@ -62,18 +100,27 @@ document.getElementById('property-form').addEventListener('submit', async functi
   const estRent = Math.round(totalPrice / 20);
 
   // Display results based on whether it's a capital city or sub-capital
+  const capitalSection = document.getElementById('capital-section');
+  const subCapitalSection = document.getElementById('sub-capital-section');
+
   if (isCapital) {
-    document.getElementById('capital-section').style.display = "block";
-    document.getElementById('sub-capital-section').style.display = "none";
+      // Update text content
+      document.getElementById('capital-price').textContent = `Buy Price: $${totalPrice.toLocaleString()}`;
+      document.getElementById('capital-rent').textContent = `Rent Per Month: $${estRent.toLocaleString()}`;
 
-    document.getElementById('capital-price').textContent = `Buy Price: $${totalPrice.toLocaleString()}`;
-    document.getElementById('capital-rent').textContent = `Rent Per Month: $${estRent.toLocaleString()}`;
+      // Smoothly expand and show the capital section, hide the sub-capital section
+      capitalSection.style.display = "block";
+      smoothExpand(capitalSection, capitalSection, duration);
+      subCapitalSection.style.display = "none";
   } else {
-    document.getElementById('capital-section').style.display = "none";
-    document.getElementById('sub-capital-section').style.display = "block";
+      // Update text content
+      document.getElementById('sub-capital-price').textContent = `Buy Price: $${totalPrice.toLocaleString()}`;
+      document.getElementById('sub-capital-rent').textContent = `Rent Per Month: $${estRent.toLocaleString()}`;
 
-    document.getElementById('sub-capital-price').textContent = `Buy Price: $${totalPrice.toLocaleString()}`;
-    document.getElementById('sub-capital-rent').textContent = `Rent Per Month: $${estRent.toLocaleString()}`;
+      // Smoothly expand and show the sub-capital section, hide the capital section
+      subCapitalSection.style.display = "block";
+      smoothExpand(subCapitalSection, subCapitalSection, duration);
+      capitalSection.style.display = "none";
   }
 
   // Displaying Country Name
