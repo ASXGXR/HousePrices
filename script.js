@@ -6,6 +6,13 @@ document.getElementById('property-form').addEventListener('submit', async functi
     return word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : '';
   }
 
+  function disableButton(button, delay) {
+    button.disabled = true;
+    setTimeout(() => {
+        button.disabled = false;
+    }, delay*1000); //seconds
+  }
+
   function smoothExpand(parentBox, addBox, duration = 1.5) {
     let box;
     if (typeof addBox === 'string') {
@@ -23,10 +30,8 @@ document.getElementById('property-form').addEventListener('submit', async functi
 
     // Append the box, initially hidden
     parentBox.appendChild(box);
-
     // Trigger reflow to ensure the transition happens
     void parentBox.offsetHeight;
-
     // Transition to a large max-height and opacity
     box.style.maxHeight = '1000px'; // Arbitrarily large value to ensure it expands fully
     box.style.opacity = 1;
@@ -47,8 +52,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
   const hasHouse = document.getElementById('hasHouse').checked;
 
   if (submitBtn.disabled) return;
-
-  submitBtn.disabled = true;
+  disableButton(submitBtn, 2); // Disable the button for 2 seconds
 
   // Fetch or calculate the average house price for the capital city
   let capitalPrice = localStorage.getItem(`${location}_capital_price`);
@@ -108,9 +112,4 @@ document.getElementById('property-form').addEventListener('submit', async functi
   // Expanding Results Container
   resultContainer.style.display = "flex";
   smoothExpand(document.querySelector('.container'), resultContainer);
-  
-  // Re-enable the submit button after 2 seconds
-  setTimeout(() => {
-    submitBtn.disabled = false;
-  }, 2000);
 });
