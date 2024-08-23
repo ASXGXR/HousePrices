@@ -73,7 +73,7 @@ button:hover {
 .result {
   display: none;
   flex-direction: column;
-  gap: 32px;
+  gap: 24px;
   background-color: #f8f9fa;
   padding: 20px;
   border-radius: 10px;
@@ -98,10 +98,6 @@ button:hover {
   display: flex;
   flex-direction: column;
   gap: 0px;
-}
-
-#city_type {
-  display: none;
 }
 
 #prices-section {

@@ -6,7 +6,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
     return word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : '';
   }
 
-  function smoothExpand(parentBox, addBox, duration = 0.5) {
+  function smoothExpand(parentBox, addBox, duration = 1.5) {
     let box;
     if (typeof addBox === 'string') {
         box = document.createElement('div');
@@ -17,7 +17,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
 
     // Set initial styles for the new box
     box.style.opacity = 0;
-    box.style.transition = `opacity ${duration}s ease-in-out`;
+    box.style.transition = `opacity ${duration/1.5}s ease-in-out, max-height ${duration}s ease-in-out`;
     box.style.maxHeight = '0px';
     box.style.overflow = 'hidden';
 
@@ -27,8 +27,8 @@ document.getElementById('property-form').addEventListener('submit', async functi
     // Trigger reflow to ensure the transition happens
     void parentBox.offsetHeight;
 
-    // Transition to full height and opacity
-    box.style.maxHeight = box.scrollHeight + 'px'; // Allow the box to expand
+    // Transition to a large max-height and opacity
+    box.style.maxHeight = '1000px'; // Arbitrarily large value to ensure it expands fully
     box.style.opacity = 1;
 
     // Cleanup: Once the transition is complete, remove the maxHeight to allow natural growth/shrinkage
@@ -57,20 +57,25 @@ document.getElementById('property-form').addEventListener('submit', async functi
     capitalPrice = parseFloat(capitalPrice);
     console.log(`Using stored capital city price for ${location}: ${capitalPrice}.`);
   } else {
-    const prompt = `Estimate the average price per square meter of a house in the capital city of ${location}, in USD. In the format: "Average SQM Price in {city}: {single-price}", add nothing else.`;
+    try {
+      const prompt = `Estimate the average price per square meter of a house in the capital city of ${location}, in USD. In the format: "Average SQM Price in {city}: {single-price}", add nothing else.`;
 
-    const apiResponse = await fetch('/.netlify/functions/openai', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt }),
-    });
+      const apiResponse = await fetch('/.netlify/functions/openai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt }),
+      });
 
-    const responseData = await apiResponse.json();
-    console.log(responseData);
+      const responseData = await apiResponse.json();
+      console.log(responseData);
 
-    capitalPrice = parseFloat(responseData.message.replace(/[^0-9.]/g, ''));
-    localStorage.setItem(`${location}_capital_price`, capitalPrice);
-    console.log(`Stored capital city price for ${location}: ${capitalPrice}.`);
+      capitalPrice = parseFloat(responseData.message.replace(/[^0-9.]/g, ''));
+      localStorage.setItem(`${location}_capital_price`, capitalPrice);
+      console.log(`Stored capital city price for ${location}: ${capitalPrice}.`);
+    } catch (error) {
+      console.error('API error or local storage access issue:', error);
+      capitalPrice = 0; // Fallback value
+    }
   }
 
   // Price calculation
@@ -81,7 +86,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
     totalPrice = Math.round(totalPrice * 0.8);
   }
 
-  const estRent = Math.round(totalPrice / 20);
+  const estRent = totalPrice > 0 ? Math.round(totalPrice / 20) : 0;
 
   // Getting Divs
   const resultContainer = document.getElementById('result');
@@ -89,9 +94,9 @@ document.getElementById('property-form').addEventListener('submit', async functi
   const cityType = document.getElementById('city_type');
 
   if (isCapital) {
-    cityType.textContent = "Capital City"
+    cityType.textContent = "Capital City";
   } else {
-    cityType.textContent = "Sub-Capital"
+    cityType.textContent = "Sub-Capital";
   }
 
   // Changing Text
