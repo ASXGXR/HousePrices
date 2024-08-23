@@ -139,5 +139,10 @@ button:hover {
   display: flex;
   flex-direction: row;
   gap: 16px;
-  justify-content: center;
+  align-items: center;
+}
+
+label, input {
+  margin: 0;
+  padding: 0;
 }

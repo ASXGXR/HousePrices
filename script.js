@@ -110,7 +110,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
 
       // Smoothly expand and show the capital section, hide the sub-capital section
       capitalSection.style.display = "block";
-      smoothExpand(capitalSection, capitalSection, duration);
+      smoothExpand(capitalSection, capitalSection);
       subCapitalSection.style.display = "none";
   } else {
       // Update text content
@@ -119,7 +119,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
 
       // Smoothly expand and show the sub-capital section, hide the capital section
       subCapitalSection.style.display = "block";
-      smoothExpand(subCapitalSection, subCapitalSection, duration);
+      smoothExpand(subCapitalSection, subCapitalSection);
       capitalSection.style.display = "none";
   }
 
