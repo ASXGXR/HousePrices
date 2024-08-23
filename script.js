@@ -83,10 +83,17 @@ document.getElementById('property-form').addEventListener('submit', async functi
   const resultContainer = document.getElementById('result');
   const priceSection = document.getElementById('prices-section');
   const countryName = document.getElementById('country_name');
+  const cityType = document.getElementById('city_type');
+
+  if (isCapital) {
+    cityType.textContent = "Capital City"
+  } else {
+    cityType.textContent = "Sub-Capital"
+  }
 
   countryName.textContent = capitalize(location);
-  countryName.style.display = "flex";
   smoothExpand(resultContainer, countryName);
+  countryName.style.display = "flex";
 
   document.getElementById('buy-price').textContent = `Buy Price: $${totalPrice.toLocaleString()}`;
   document.getElementById('rent-price').textContent = `Rent Per Month: $${estRent.toLocaleString()}`;
