@@ -1,48 +1,50 @@
+// FUNCTIONS
+
+// Capitalise Word
+function capitalize(word) {
+  return word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : '';
+}
+
+// Button Delay
+function disableButton(button, delay) {
+  button.disabled = true;
+  setTimeout(() => {
+      button.disabled = false;
+  }, delay * 1000);
+}
+
+// Smoothly Add Box
+function smoothExpand(parentBox, addBox, duration = 1.5) {
+  // Create box if string given
+  const box = typeof addBox === 'string' 
+    ? Object.assign(document.createElement('div'), { className: addBox.replace('.', '') })
+    : addBox;
+
+  // Set initial styles for the new box
+  box.style.opacity = 0;
+  box.style.transition = `opacity ${duration/1.5}s ease-in-out, max-height ${duration}s ease-in-out`;
+  box.style.maxHeight = '0px';
+  box.style.overflow = 'hidden';
+
+  // Append the box, trigger reflow, and start the transition
+  parentBox.appendChild(box);
+  void parentBox.offsetHeight;
+  box.style.maxHeight = '1000px'; // Large value to ensure expansion
+  box.style.opacity = 1;
+
+  // Cleanup: Once the transition is complete, remove the maxHeight to allow natural growth/shrinkage
+  box.addEventListener('transitionend', function () {
+      box.style.maxHeight = '';
+      box.style.overflow = '';
+  }, { once: true });
+}
+
+  
 document.getElementById('property-form').addEventListener('submit', async function(event) {
   event.preventDefault();
 
-  // FUNCTIONS
-
-  // Capitalise Word
-  function capitalize(word) {
-    return word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : '';
-  }
-
-  // Button Delay
-  function disableButton(button, delay) {
-    button.disabled = true;
-    setTimeout(() => {
-        button.disabled = false;
-    }, delay * 1000);
-  }
-
-  // Smoothly Add Box
-  function smoothExpand(parentBox, addBox, duration = 1.5) {
-    // Create box if string given
-    const box = typeof addBox === 'string' 
-      ? Object.assign(document.createElement('div'), { className: addBox.replace('.', '') })
-      : addBox;
-
-    // Set initial styles for the new box
-    box.style.opacity = 0;
-    box.style.transition = `opacity ${duration/1.5}s ease-in-out, max-height ${duration}s ease-in-out`;
-    box.style.maxHeight = '0px';
-    box.style.overflow = 'hidden';
-
-    // Append the box, trigger reflow, and start the transition
-    parentBox.appendChild(box);
-    void parentBox.offsetHeight;
-    box.style.maxHeight = '1000px'; // Large value to ensure expansion
-    box.style.opacity = 1;
-
-    // Cleanup: Once the transition is complete, remove the maxHeight to allow natural growth/shrinkage
-    box.addEventListener('transitionend', function () {
-        box.style.maxHeight = '';
-        box.style.overflow = '';
-    }, { once: true });
-  }
-
   // VARIABLES
+  const buttonDelay = 2; //seconds
   const submitBtn = event.target.querySelector('button[type="submit"]');
   const location = document.getElementById('location').value.trim().toLowerCase();
   const areaInput = document.getElementById('area').value.trim();
@@ -51,7 +53,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
   const hasHouse = document.getElementById('hasHouse').checked;
 
   if (submitBtn.disabled) return;
-  disableButton(submitBtn, 5); // Disable the button for 2 seconds
+  disableButton(submitBtn, buttonDelay); // Disable the button temporarily
 
   // Fetch or calculate the average house price for the capital city
   let capitalPrice = localStorage.getItem(`${location}_capital_price`);
