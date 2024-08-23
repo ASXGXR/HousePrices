@@ -16,18 +16,18 @@ document.getElementById('property-form').addEventListener('submit', async functi
     }
 
     box.style.opacity = 0;
-    box.style.transition = opacity ${duration}s ease-in-out;
+    box.style.transition = `opacity ${duration}s ease-in-out`;
 
     parentBox.appendChild(box);
 
     const startHeight = parentBox.clientHeight;
-    parentBox.style.height = ${startHeight}px;
-    parentBox.style.transition = height ${duration}s ease-in-out;
+    parentBox.style.height = `${startHeight}px`;
+    parentBox.style.transition = `height ${duration}s ease-in-out`;
 
     void parentBox.offsetHeight; // Trigger reflow
 
     const newHeight = startHeight + box.scrollHeight;
-    parentBox.style.height = ${newHeight}px;
+    parentBox.style.height = `${newHeight}px`;
 
     setTimeout(() => {
       box.style.opacity = 1;
