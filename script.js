@@ -7,31 +7,38 @@ document.getElementById('property-form').addEventListener('submit', async functi
   }
 
   function smoothExpand(parentBox, addBox, duration = 0.5) {
-    let box;
-    if (typeof addBox === 'string') {
-      box = document.createElement('div');
-      box.className = addBox.replace('.', '');
-    } else {
-      box = addBox;
-    }
+    return new Promise(resolve => {
+      let box;
+      if (typeof addBox === 'string') {
+        box = document.createElement('div');
+        box.className = addBox.replace('.', '');
+      } else {
+        box = addBox;
+      }
 
-    box.style.opacity = 0;
-    box.style.transition = `opacity ${duration}s ease-in-out`;
+      box.style.opacity = 0;
+      box.style.transition = `opacity ${duration}s ease-in-out`;
 
-    parentBox.appendChild(box);
+      parentBox.appendChild(box);
 
-    const startHeight = parentBox.clientHeight;
-    parentBox.style.height = `${startHeight}px`;
-    parentBox.style.transition = `height ${duration}s ease-in-out`;
+      const startHeight = parentBox.clientHeight;
+      parentBox.style.height = `${startHeight}px`;
+      parentBox.style.transition = `height ${duration}s ease-in-out`;
 
-    void parentBox.offsetHeight; // Trigger reflow
+      void parentBox.offsetHeight; // Trigger reflow
 
-    const newHeight = startHeight + box.scrollHeight;
-    parentBox.style.height = `${newHeight}px`;
+      const newHeight = startHeight + box.scrollHeight;
+      parentBox.style.height = `${newHeight}px`;
 
-    setTimeout(() => {
-      box.style.opacity = 1;
-    }, duration * 1000);
+      setTimeout(() => {
+        box.style.opacity = 1;
+        setTimeout(() => resolve(), duration * 1000); // Resolve after the transition completes
+      }, duration * 1000);
+    });
+  }
+
+  function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   // VARIABLES
@@ -54,7 +61,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
     console.log(`Using stored capital city price for ${location}: ${capitalPrice}.`);
   } else {
     const prompt = `Estimate the average price per square meter of a house in the capital city of ${location}, in USD. In the format: "Average SQM Price in {city}: {single-price}", add nothing else.`;
-    
+
     const apiResponse = await fetch('/.netlify/functions/openai', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -79,14 +86,10 @@ document.getElementById('property-form').addEventListener('submit', async functi
 
   const estRent = Math.round(totalPrice / 20);
 
-  // Display results
+  // Getting Divs
   const resultContainer = document.getElementById('result');
-  const priceSection = document.getElementById('prices-section');
   const countryName = document.getElementById('country_name');
   const cityType = document.getElementById('city_type');
-
-  resultContainer.style.display = "flex";
-  smoothExpand(document.querySelector('.container'), resultContainer);
 
   if (isCapital) {
     cityType.textContent = "Capital City"
@@ -94,16 +97,15 @@ document.getElementById('property-form').addEventListener('submit', async functi
     cityType.textContent = "Sub-Capital"
   }
 
+  // Changing Text
   countryName.textContent = capitalize(location);
-  smoothExpand(resultContainer, cityType);
-  cityType.style.display = "flex";
-
   document.getElementById('buy-price').textContent = `Buy Price: $${totalPrice.toLocaleString()}`;
   document.getElementById('rent-price').textContent = `Rent Per Month: $${estRent.toLocaleString()}`;
 
-  priceSection.style.display = "flex";
-  smoothExpand(resultContainer, priceSection);
-
+  // Expanding Results Container
+  resultContainer.style.display = "flex";
+  await smoothExpand(document.querySelector('.container'), resultContainer);
+  
   // Re-enable the submit button after 2 seconds
   setTimeout(() => {
     submitBtn.disabled = false;
