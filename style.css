@@ -149,5 +149,11 @@ label, input {
 form {
   display: flex;
   flex-direction: column;
+  gap: 16px;
+}
+
+div {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 }
