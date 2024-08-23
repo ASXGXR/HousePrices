@@ -72,7 +72,6 @@ document.getElementById('property-form').addEventListener('submit', async functi
       capitalPrice = parseFloat(responseData.message.replace(/[^0-9.]/g, ''));
       localStorage.setItem(`${location}_capital_price`, capitalPrice);
       console.log(`Stored capital city price for ${location}: ${capitalPrice}.`);
-      
     } catch (error) {
       console.error('API error or local storage access issue:', error);
       capitalPrice = 0; // Fallback value
