@@ -15,30 +15,30 @@ document.getElementById('property-form').addEventListener('submit', async functi
       box = addBox;
     }
 
-    // Initially hide the box
+    // Set initial styles for the new box
     box.style.opacity = 0;
     box.style.transition = `opacity ${duration}s ease-in-out`;
 
-    // Append the box to the parent container
+    // Append the box but keep it out of the document flow
+    box.style.position = 'absolute';
+    box.style.visibility = 'hidden';
     parentBox.appendChild(box);
 
-    // Measure the full height of the container after adding the new box
-    const newHeight = parentBox.scrollHeight;
+    // Calculate the new height needed for the parentBox
+    const newHeight = parentBox.scrollHeight + box.scrollHeight;
 
-    // Set the container height explicitly before the transition
-    parentBox.style.height = `${parentBox.clientHeight}px`;
+    // Set the parentBox height explicitly before the transition
+    parentBox.style.height = `${parentBox.scrollHeight}px`;
     parentBox.style.transition = `height ${duration}s ease-in-out`;
 
     // Trigger reflow to ensure the transition happens
     void parentBox.offsetHeight;
 
-    // Animate to the new height
+    // Now, update the height of the parent box and make the new box visible
     parentBox.style.height = `${newHeight}px`;
-
-    // Fade in the added box
-    setTimeout(() => {
-        box.style.opacity = 1;
-    }, 50); // Start the fade-in slightly after height transition starts
+    box.style.position = '';
+    box.style.visibility = '';
+    box.style.opacity = 1;
   }
 
   // VARIABLES
