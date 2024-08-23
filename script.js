@@ -85,6 +85,8 @@ document.getElementById('property-form').addEventListener('submit', async functi
   const countryName = document.getElementById('country_name');
   const cityType = document.getElementById('city_type');
 
+  smoothExpand(document.querySelector('.container'), resultContainer);
+
   if (isCapital) {
     cityType.textContent = "Capital City"
   } else {
