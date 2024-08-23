@@ -80,7 +80,8 @@ document.getElementById('property-form').addEventListener('submit', async functi
 
   // Price calculation
   const finalPrice = isCapital ? capitalPrice : Math.round(capitalPrice / 1.5);
-  let totalPrice = Math.round(area * finalPrice * 0.1);
+  const difference = 0.05; // Diff between real world + in-game price
+  let totalPrice = Math.round(area * finalPrice * difference);
 
   if (isEmptyPlot) {
     totalPrice = Math.round(totalPrice * 0.8);
