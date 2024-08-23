@@ -92,8 +92,8 @@ document.getElementById('property-form').addEventListener('submit', async functi
   }
 
   countryName.textContent = capitalize(location);
-  smoothExpand(resultContainer, countryName);
-  countryName.style.display = "flex";
+  smoothExpand(resultContainer, cityType);
+  cityType.style.display = "flex";
 
   document.getElementById('buy-price').textContent = `Buy Price: $${totalPrice.toLocaleString()}`;
   document.getElementById('rent-price').textContent = `Rent Per Month: $${estRent.toLocaleString()}`;

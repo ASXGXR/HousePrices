@@ -119,11 +119,8 @@ button:hover {
   gap: 0px;
 }
 
-#country_name {
+#city_type {
   display: none;
-  justify-content: center;
-  padding: 0;
-  margin: 0;
 }
 
 #prices-section {
@@ -163,4 +160,9 @@ form {
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+h2, h3 {
+  padding: 0;
+  margin: 0;
 }
