@@ -79,7 +79,6 @@ button:hover {
 
 .result {
   display: none;
-  display: flex;
   flex-direction: column;
   gap: 32px;
   background-color: #f8f9fa;
@@ -94,21 +93,6 @@ button:hover {
   margin: 8px 0;
   font-weight: 500;
   color: #555;
-}
-
-@media (max-width: 400px) {
-  .container {
-      width: 90%;
-      padding: 20px;
-  }
-
-  button {
-      font-size: 14px;
-  }
-
-  #result p {
-      font-size: 16px;
-  }
 }
 
 .row {
