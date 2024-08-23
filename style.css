@@ -128,17 +128,24 @@ button:hover {
 
 #prices-section {
   display: none;
+  flex-direction: column;
 }
 
 .result h2 {
   margin-top: 0;
 }
 
-.checkbox {
-  display: flex;
-  flex-direction: row;
+.checkboxes {
   gap: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.checkbox {
+  gap: 16px;
+  display: flex;
   align-items: center;
+  flex-direction: row;
 }
 
 label, input {
@@ -147,12 +154,6 @@ label, input {
 }
 
 form {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.checkboxes {
   display: flex;
   flex-direction: column;
   gap: 24px;
