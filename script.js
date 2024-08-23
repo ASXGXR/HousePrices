@@ -6,17 +6,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
     return word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : '';
   }
 
-  function sleep(seconds) {
-    return new Promise(resolve => setTimeout(resolve, seconds * 1000));
-  }
-
-  async function smoothExpand(parentBox, addBox, duration = 0.5) {
-    // Sleep function
-    const sleep = (seconds) => {
-      return new Promise(resolve => setTimeout(resolve, seconds * 1000));
-    };
-    await sleep(duration);
-  
+  function smoothExpand(parentBox, addBox, duration = 0.5) {
     let box;
     if (typeof addBox === 'string') {
       box = document.createElement('div');
@@ -24,26 +14,25 @@ document.getElementById('property-form').addEventListener('submit', async functi
     } else {
       box = addBox;
     }
-  
+
     box.style.opacity = 0;
     box.style.transition = `opacity ${duration}s ease-in-out`;
-  
+
     parentBox.appendChild(box);
-  
+
     const startHeight = parentBox.clientHeight;
     parentBox.style.height = `${startHeight}px`;
     parentBox.style.transition = `height ${duration}s ease-in-out`;
-  
+
     void parentBox.offsetHeight; // Trigger reflow
-  
+
     const newHeight = startHeight + box.scrollHeight;
     parentBox.style.height = `${newHeight}px`;
-  
+
     setTimeout(() => {
       box.style.opacity = 1;
     }, duration * 1000);
   }
-  
 
   // VARIABLES
   const submitBtn = event.target.querySelector('button[type="submit"]');
@@ -97,7 +86,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
   const cityType = document.getElementById('city_type');
 
   resultContainer.style.display = "flex";
-  await smoothExpand(document.querySelector('.container'), resultContainer);
+  smoothExpand(document.querySelector('.container'), resultContainer);
 
   if (isCapital) {
     cityType.textContent = "Capital City"
@@ -106,14 +95,14 @@ document.getElementById('property-form').addEventListener('submit', async functi
   }
 
   countryName.textContent = capitalize(location);
-  await smoothExpand(resultContainer, cityType);
+  smoothExpand(resultContainer, cityType);
   cityType.style.display = "flex";
 
   document.getElementById('buy-price').textContent = `Buy Price: $${totalPrice.toLocaleString()}`;
   document.getElementById('rent-price').textContent = `Rent Per Month: $${estRent.toLocaleString()}`;
 
   priceSection.style.display = "flex";
-  await smoothExpand(resultContainer, priceSection);
+  smoothExpand(resultContainer, priceSection);
 
   // Re-enable the submit button after 2 seconds
   setTimeout(() => {
