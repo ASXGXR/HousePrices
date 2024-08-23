@@ -85,6 +85,7 @@ document.getElementById('property-form').addEventListener('submit', async functi
   const countryName = document.getElementById('country_name');
   const cityType = document.getElementById('city_type');
 
+  resultContainer.style.display = "flex";
   smoothExpand(document.querySelector('.container'), resultContainer);
 
   if (isCapital) {
