@@ -39,7 +39,13 @@ document.getElementById('property-form').addEventListener('submit', async functi
     box.style.position = '';
     box.style.visibility = '';
     box.style.opacity = 1;
-  }
+
+    // Once the transition is complete, remove the explicit height
+    setTimeout(() => {
+        parentBox.style.height = '';
+    }, duration * 1000);
+}
+
 
   // VARIABLES
   const submitBtn = event.target.querySelector('button[type="submit"]');
