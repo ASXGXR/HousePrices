@@ -126,8 +126,8 @@ button:hover {
   margin: 0;
 }
 
-#capital-section, #sub-capital-section {
-  display: none; /* Hide both sections initially */
+.prices-section {
+  display: none;
 }
 
 .result h2 {
