@@ -149,11 +149,17 @@ label, input {
 form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
 }
 
-div {
+.checkboxes {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 24px;
+}
+
+.input-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
