@@ -13,30 +13,109 @@ function disableButton(button, delay) {
   }, delay * 1000);
 }
 
+// Get Margin + Padding
+function getBoxMarginAndPadding(box) {
+  const computedStyle = window.getComputedStyle(box);
+
+  const margin = {
+    top: computedStyle.marginTop,
+    right: computedStyle.marginRight,
+    bottom: computedStyle.marginBottom,
+    left: computedStyle.marginLeft
+  };
+
+  const padding = {
+    top: computedStyle.paddingTop,
+    right: computedStyle.paddingRight,
+    bottom: computedStyle.paddingBottom,
+    left: computedStyle.paddingLeft
+  };
+
+  return { margin, padding };
+}
+
+// Add Margin + Padding
+function reapplyMarginAndPadding(box, margin, padding) {
+  box.style.marginTop = margin.top;
+  box.style.marginRight = margin.right;
+  box.style.marginBottom = margin.bottom;
+  box.style.marginLeft = margin.left;
+
+  box.style.paddingTop = padding.top;
+  box.style.paddingRight = padding.right;
+  box.style.paddingBottom = padding.bottom;
+  box.style.paddingLeft = padding.left;
+}
+
 // Smoothly Add Box
-function smoothExpand(parentBox, addBox, duration = 1.5) {
+function smoothExpand(parentBox, addBox, duration = 1.5, display = 'flex') {
   // Create box if string given
   const box = typeof addBox === 'string' 
     ? Object.assign(document.createElement('div'), { className: addBox.replace('.', '') })
     : addBox;
 
+  // Get Original styles
+  const { margin, padding } = getBoxMarginAndPadding(box);
+
   // Set initial styles for the new box
-  box.style.opacity = 0;
-  box.style.transition = `opacity ${duration/1.5}s ease-in-out, max-height ${duration}s ease-in-out`;
-  box.style.maxHeight = '0px';
-  box.style.overflow = 'hidden';
+  box.style.height = '0px';
+  box.style.paddingTop = '0';
+  box.style.paddingBottom = '0';
+  box.style.marginTop = '0';
+  box.style.marginBottom = '0';
+  box.style.opacity = '0';
+  box.style.overflow = 'hidden';  // Ensure overflow is hidden to avoid content showing during transition
 
-  // Append the box, trigger reflow, and start the transition
+  // Append the box
   parentBox.appendChild(box);
-  void parentBox.offsetHeight;
-  box.style.maxHeight = '1000px'; // Large value to ensure expansion
-  box.style.opacity = 1;
 
-  // Cleanup: Once the transition is complete, remove the maxHeight to allow natural growth/shrinkage
-  box.addEventListener('transitionend', function () {
-      box.style.maxHeight = '';
-      box.style.overflow = '';
+  // Trigger reflow to ensure initial styles are applied before transition
+  box.offsetHeight; // Trigger reflow
+
+  // Set transition and final styles to trigger smooth expansion
+  box.style.transition = `height ${duration}s ease-in-out, opacity ${duration / 1.5}s ease-in-out, padding ${duration}s ease-in-out, margin ${duration}s ease-in-out`;
+  box.style.height = `${box.scrollHeight}px`; // Set to final height
+  box.style.paddingTop = padding.top;
+  box.style.paddingBottom = padding.bottom;
+  box.style.marginTop = margin.top;
+  box.style.marginBottom = margin.bottom;
+  box.style.opacity = '1';
+
+  // Cleanup after transition ends
+  box.addEventListener('transitionend', function() {
+    box.style.height = ''; // Clear fixed height to allow dynamic content
+    box.style.overflow = ''; // Reset overflow to default
+    box.style.transition = ''; // Clear transition styles
   }, { once: true });
+}
+
+
+function addPronounce(pronounce,pronounceBox) {
+  // Create and configure new box
+  let newBox = document.createElement("div");
+  newBox.className = "pronunciation-text";
+  newBox.textContent = pronounce;
+  newBox.style.opacity = "0.4";
+  
+  // Find the existing .input-container.input2 element
+  let existingContainer = document.querySelector(`.input-container.input${pronounceBox}`);
+  
+  // Clear current pronunciation boxes and create a new one
+  clearPronounce();
+  let pronunciationBox = document.createElement("div");
+  pronunciationBox.className = "pronunciation-box";
+  pronunciationBox.style.height = '0px'; // Start with 0 height
+  pronunciationBox.appendChild(newBox); // Append new pronunciation text
+
+  // Append the pronunciation box before char-limit
+  let charLimitElement = document.getElementById(`char-limit${pronounceBox}`);
+  existingContainer.insertBefore(pronunciationBox, charLimitElement);
+
+  // Smooth transition
+  setTimeout(() => {
+    pronunciationBox.style.height = newBox.scrollHeight + 'px'; // Set to the height of the content
+    pronunciationBox.style.opacity = '1';
+  }, 10);
 }
 
   
@@ -111,6 +190,5 @@ document.getElementById('property-form').addEventListener('submit', async functi
   document.getElementById('rent-price').textContent = `Rent Per Month: $${estRent.toLocaleString()}`;
 
   // Expanding Results Container
-  resultContainer.style.display = "flex";
   smoothExpand(document.querySelector('.container'), resultContainer);
 });
