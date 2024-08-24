@@ -48,44 +48,34 @@ function reapplyMarginAndPadding(box, margin, padding) {
 }
 
 // Smoothly Add Box
-function smoothExpand(parentBox, addBox, duration = 1.5, display = 'flex') {
+function smoothExpand(parentBox, addBox, duration = 1.5) {
   // Create box if string given
   const box = typeof addBox === 'string' 
     ? Object.assign(document.createElement('div'), { className: addBox.replace('.', '') })
     : addBox;
 
-  // Get Original styles
-  const { margin, padding } = getBoxMarginAndPadding(box);
-
   // Set initial styles for the new box
-  box.style.height = '0px';
-  box.style.paddingTop = '0';
-  box.style.paddingBottom = '0';
-  box.style.marginTop = '0';
-  box.style.marginBottom = '0';
-  box.style.opacity = '0';
-  box.style.overflow = 'hidden';  // Ensure overflow is hidden to avoid content showing during transition
+  box.style.opacity = 0;
+  box.style.transition = `opacity ${duration/1.5}s ease-in-out`;
+  box.style.maxHeight = '0px';
+  box.style.overflow = 'hidden';
 
-  // Append the box
+  // Append the box to measure height
   parentBox.appendChild(box);
 
-  // Trigger reflow to ensure initial styles are applied before transition
-  box.offsetHeight; // Trigger reflow
+  // Measure the final height of the new box
+  const boxHeight = box.scrollHeight;
 
-  // Set transition and final styles to trigger smooth expansion
-  box.style.transition = `height ${duration}s ease-in-out, opacity ${duration / 1.5}s ease-in-out, padding ${duration}s ease-in-out, margin ${duration}s ease-in-out`;
-  box.style.height = `${box.scrollHeight}px`; // Set to final height
-  box.style.paddingTop = padding.top;
-  box.style.paddingBottom = padding.bottom;
-  box.style.marginTop = margin.top;
-  box.style.marginBottom = margin.bottom;
-  box.style.opacity = '1';
+  // Trigger a reflow, then expand the box smoothly
+  void box.offsetHeight;
+  box.style.transition = `opacity ${duration/1.5}s ease-in-out, max-height ${duration}s ease-in-out`;
+  box.style.maxHeight = `${boxHeight}px`; // Expand to full height
+  box.style.opacity = 1; // Fade in
 
-  // Cleanup after transition ends
-  box.addEventListener('transitionend', function() {
-    box.style.height = ''; // Clear fixed height to allow dynamic content
-    box.style.overflow = ''; // Reset overflow to default
-    box.style.transition = ''; // Clear transition styles
+  // Once the transition is complete, cleanup
+  box.addEventListener('transitionend', function () {
+    box.style.maxHeight = ''; // Reset max-height to allow natural growth/shrinkage
+    box.style.overflow = '';
   }, { once: true });
 }
 
